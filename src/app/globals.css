@@ -101,7 +101,8 @@ html[data-theme="light"] ::-webkit-scrollbar-track { background: rgba(0,0,0,0.03
 html[data-theme="light"] ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); }
 
 html[data-theme="light"] img[alt="paradaise.id"] {
-  filter: invert(1);
+  /* invert + hue-rotate preserva el cyan en el logo PNG */
+  filter: invert(1) hue-rotate(180deg);
 }
 
 *:focus-visible {
