@@ -229,7 +229,7 @@ export default function Simulation() {
         </div>
 
         {/* Body */}
-        <div className="min-h-[200px] px-5 py-4 text-sm leading-relaxed text-white/85 bg-black/20 whitespace-pre-wrap break-words relative">
+        <div className="min-h-[140px] sm:min-h-[200px] px-5 py-4 text-sm leading-relaxed text-white/85 bg-black/20 whitespace-pre-wrap break-words relative">
           {activeTab === "whatsapp" ? (
             <div className="bg-cyan-300/[0.08] border-l-2 border-cyan-300/50 px-3.5 py-2.5 rounded-lg text-[13px] leading-relaxed">
               <div className="text-[11px] text-white/40 mb-1">→ {whatsapp.who}</div>
@@ -259,13 +259,14 @@ export default function Simulation() {
             return (
               <div
                 key={idx}
-                className={`px-3.5 py-2.5 rounded-lg bg-cyan-300/[0.06] border border-cyan-300/20 text-[13px] leading-relaxed mb-2 transition-all duration-500 ${
-                  visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+                className={`rounded-lg bg-cyan-300/[0.06] border border-cyan-300/20 text-[13px] leading-relaxed transition-all duration-500 overflow-hidden card-enhanced-body ${
+                  visible
+                    ? "opacity-100 translate-y-0 px-3.5 py-2.5 mb-2 max-h-[400px]"
+                    : "opacity-0 translate-y-2 px-3.5 py-0 mb-0 max-h-0 border-transparent"
                 }`}
-                style={{ color: "rgba(200,230,255,0.95)" }}
               >
                 <div dangerouslySetInnerHTML={{ __html: ins.textHtml }} />
-                <div className="text-[11px] mt-1" style={{ color: "rgba(150,195,235,0.7)" }}>
+                <div className="text-[11px] mt-1 card-enhanced-label">
                   {ins.meta}
                 </div>
               </div>

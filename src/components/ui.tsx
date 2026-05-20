@@ -90,9 +90,9 @@ export function CardEnhanced({
   className?: string;
 }) {
   return (
-    <div className={`p-4 rounded-lg bg-cyan-300/[0.06] border border-cyan-300/25 ${className}`} style={{ color: "rgba(190,225,255,0.95)" }}>
-      <div className="text-[10px] uppercase tracking-[0.12em] opacity-60 mb-2">{label}</div>
-      <div className="text-sm leading-relaxed">{children}</div>
+    <div className={`p-4 rounded-lg bg-cyan-300/[0.06] border border-cyan-300/25 card-enhanced ${className}`}>
+      <div className="text-[10px] uppercase tracking-[0.12em] mb-2 card-enhanced-label">{label}</div>
+      <div className="text-sm leading-relaxed card-enhanced-body">{children}</div>
     </div>
   );
 }

@@ -68,18 +68,17 @@ export default function Home() {
 
   return (
     <div className="flex-1 max-w-2xl mx-auto w-full px-5 sm:px-6 py-8 sm:py-12">
-      <header className="mb-10">
-        <div className="flex items-center justify-between mb-5">
-          <span className="text-white/40 text-xs">demo</span>
-          <span className="text-white/40 text-xs">paso {step} de {TOTAL_STEPS}</span>
-        </div>
-        <div className="w-full h-[2px] bg-white/10 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-white/85 transition-[width] duration-500 ease-in-out"
-            style={{ width: `${progressPct}%` }}
-          />
-        </div>
-      </header>
+      {/* Header del demo: solo a partir del paso 2 (paso 1 es el hero limpio) */}
+      {step > 1 && (
+        <header className="mb-10">
+          <div className="w-full h-[2px] bg-white/10 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-white/85 transition-[width] duration-500 ease-in-out"
+              style={{ width: `${progressPct}%` }}
+            />
+          </div>
+        </header>
+      )}
 
       <section>
         {step === 1 && <Step1 onNext={next} />}

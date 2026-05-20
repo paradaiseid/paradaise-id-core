@@ -18,7 +18,7 @@ export default function Step1({ onNext }: { onNext: () => void }) {
       <p className="text-white/70 text-base sm:text-lg leading-relaxed mb-10 max-w-lg">
         En un minuto vas a entender cómo se siente.
       </p>
-      <Btn onClick={onNext}>Comenzar</Btn>
+      <Btn onClick={onNext}>Ver cómo se siente</Btn>
     </div>
   );
 }

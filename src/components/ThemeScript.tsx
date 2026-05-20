@@ -1,19 +1,15 @@
 /**
  * ThemeScript — corre antes de hidratacion para evitar flash blanco/negro.
- * Lee localStorage o respeta prefers-color-scheme.
+ * Default SIEMPRE oscuro. Solo cambia a light si el usuario lo elige explicitamente.
  */
 
 const SCRIPT = `(function () {
   try {
     var stored = localStorage.getItem('paradaise-theme');
-    var theme = stored;
-    if (!theme) {
-      // si el usuario NO ha elegido, respetamos el preferred del sistema
-      theme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-    }
-    if (theme === 'light') {
+    if (stored === 'light') {
       document.documentElement.setAttribute('data-theme', 'light');
     }
+    // si no hay nada guardado o stored === 'dark', dark por default (no se hace nada)
   } catch (e) {}
 })();`;
 

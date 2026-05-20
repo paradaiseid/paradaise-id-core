@@ -89,24 +89,28 @@ export default function Nav() {
           <ThemeToggle />
         </div>
 
-        <button
-          type="button"
-          aria-label="Abrir menu"
-          onClick={() => setOpen((v) => !v)}
-          className="md:hidden text-white/70 p-2 -mr-2"
-        >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            {open ? (
-              <path d="M6 6 L18 18 M18 6 L6 18" strokeLinecap="round" />
-            ) : (
-              <>
-                <line x1="4" y1="7" x2="20" y2="7" strokeLinecap="round" />
-                <line x1="4" y1="12" x2="20" y2="12" strokeLinecap="round" />
-                <line x1="4" y1="17" x2="20" y2="17" strokeLinecap="round" />
-              </>
-            )}
-          </svg>
-        </button>
+        {/* Mobile: theme toggle visible siempre + hamburguesa */}
+        <div className="md:hidden flex items-center gap-1">
+          <ThemeToggle />
+          <button
+            type="button"
+            aria-label="Abrir menu"
+            onClick={() => setOpen((v) => !v)}
+            className="text-white/70 p-2 -mr-2"
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              {open ? (
+                <path d="M6 6 L18 18 M18 6 L6 18" strokeLinecap="round" />
+              ) : (
+                <>
+                  <line x1="4" y1="7" x2="20" y2="7" strokeLinecap="round" />
+                  <line x1="4" y1="12" x2="20" y2="12" strokeLinecap="round" />
+                  <line x1="4" y1="17" x2="20" y2="17" strokeLinecap="round" />
+                </>
+              )}
+            </svg>
+          </button>
+        </div>
       </nav>
 
       {open && (
