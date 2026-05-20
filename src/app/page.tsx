@@ -6,7 +6,7 @@ import { copy, type Lang, PUBLIC_CONTACT_EMAIL } from "@/lib/copy";
 export default function Home() {
   const [lang, setLang] = useState<Lang>("es");
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "duplicate" | "error">("idle");
 
   const t = copy[lang];
 
@@ -17,9 +17,25 @@ export default function Home() {
       return;
     }
     setStatus("submitting");
-    // TODO: conectar a /api/waitlist en Day 1 - parte 2
-    console.log("Waitlist signup:", { email, lang, timestamp: new Date().toISOString() });
-    setTimeout(() => setStatus("success"), 600);
+
+    try {
+      const response = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, lang }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.ok) {
+        setStatus(data.duplicate ? "duplicate" : "success");
+      } else {
+        setStatus("error");
+      }
+    } catch (err) {
+      console.error("[waitlist] fetch error:", err);
+      setStatus("error");
+    }
   }
 
   function toggleLang() {
@@ -48,10 +64,14 @@ export default function Home() {
             {t.hero.sub}
           </p>
 
-          {status === "success" ? (
+          {status === "success" || status === "duplicate" ? (
             <div className="bg-white/5 border border-white/10 rounded-lg p-6 text-center max-w-md mx-auto">
-              <p className="text-xl font-medium mb-2">{t.waitlist.successTitle}</p>
-              <p className="text-sm text-white/60">{t.waitlist.successMessage}</p>
+              <p className="text-xl font-medium mb-2">
+                {status === "duplicate" ? t.waitlist.duplicateTitle : t.waitlist.successTitle}
+              </p>
+              <p className="text-sm text-white/60">
+                {status === "duplicate" ? t.waitlist.duplicateMessage : t.waitlist.successMessage}
+              </p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">

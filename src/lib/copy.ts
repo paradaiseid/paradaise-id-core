@@ -17,6 +17,8 @@ export const copy = {
       submitButton: "Reserva tu acceso",
       successTitle: "Estás dentro.",
       successMessage: "Te avisamos en cuanto abramos accesos.",
+      duplicateTitle: "Ya estás dentro.",
+      duplicateMessage: "Tu correo ya está registrado. Te avisamos en cuanto abramos accesos.",
       errorMessage: "Algo falló. Intenta de nuevo en un momento.",
     },
     footer: {
@@ -40,6 +42,8 @@ export const copy = {
       submitButton: "Reserve your access",
       successTitle: "You're in.",
       successMessage: "We'll let you know as soon as we open access.",
+      duplicateTitle: "You're already in.",
+      duplicateMessage: "Your email is already registered. We'll let you know as soon as we open access.",
       errorMessage: "Something went wrong. Please try again in a moment.",
     },
     footer: {
