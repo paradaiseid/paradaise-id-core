@@ -1,118 +1,129 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
-import { copy, type Lang, PUBLIC_CONTACT_EMAIL } from "@/lib/copy";
+import Step1 from "@/components/steps/Step1";
+import Step2 from "@/components/steps/Step2";
+import Step3 from "@/components/steps/Step3";
+import Step4 from "@/components/steps/Step4";
+import Step5 from "@/components/steps/Step5";
+import Step6 from "@/components/steps/Step6";
+import Step7 from "@/components/steps/Step7";
+import type { Consents, Contexto, Edad } from "@/components/steps/types";
+
+const TOTAL_STEPS = 7;
 
 export default function Home() {
-  const [lang, setLang] = useState<Lang>("es");
-  const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "duplicate" | "error">("idle");
+  const [step, setStep] = useState<number>(1);
+  const [consents, setConsents] = useState<Consents>({ ia: true, notas: true, busquedas: true, browser: true });
 
-  const t = copy[lang];
+  const [contexto, setContexto] = useState<Contexto>(null);
+  const [edad, setEdad] = useState<Edad>(null);
+  const [proyecto, setProyecto] = useState<string>("");
+  const [decision, setDecision] = useState<string>("");
+  const [trazaGuardada, setTrazaGuardada] = useState<boolean>(false);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!email || !email.includes("@")) {
-      setStatus("error");
-      return;
-    }
-    setStatus("submitting");
+  const scrollToTop = () => {
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  const next = () => {
+    setStep((s) => Math.min(TOTAL_STEPS, s + 1));
+    scrollToTop();
+  };
+  const prev = () => {
+    setStep((s) => Math.max(1, s - 1));
+    scrollToTop();
+  };
+  const progressPct = (step / TOTAL_STEPS) * 100;
 
-    try {
-      const response = await fetch("/api/waitlist", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, lang }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.ok) {
-        setStatus(data.duplicate ? "duplicate" : "success");
-      } else {
-        setStatus("error");
-      }
-    } catch (err) {
-      console.error("[waitlist] fetch error:", err);
-      setStatus("error");
-    }
+  const activos = Object.values(consents).filter(Boolean).length;
+  const usoPct = Math.round((activos / 4) * 100);
+  let usoLabel = "Uso optimo";
+  let usoHint = "Mas contexto crea mejoras y continuidad mas precisa.";
+  if (usoPct < 100 && usoPct >= 75) {
+    usoLabel = "Uso recomendado";
+    usoHint = "Buen nivel de contexto. La continuidad va a sentirse natural.";
+  } else if (usoPct < 75 && usoPct >= 50) {
+    usoLabel = "Uso basico";
+    usoHint = "Contexto limitado. Las mejoras van a ser mas generales.";
+  } else if (usoPct < 50) {
+    usoLabel = "Uso solo para prueba";
+    usoHint = "No recomendable. No hay suficiente contexto con este nivel.";
   }
 
-  function toggleLang() {
-    setLang(lang === "es" ? "en" : "es");
-  }
+  const toggleConsent = (k: keyof Consents) => {
+    if (k === "ia") return;
+    setConsents((c) => ({ ...c, [k]: !c[k] }));
+  };
+
+  const reiniciar = () => {
+    setStep(1);
+    setConsents({ ia: true, notas: true, busquedas: true, browser: true });
+    setContexto(null);
+    setEdad(null);
+    setProyecto("");
+    setDecision("");
+    setTrazaGuardada(false);
+    scrollToTop();
+  };
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col">
-      <nav className="flex justify-between items-center px-6 py-6 md:px-12 md:py-8">
-        <div className="text-sm font-medium tracking-tight">paradaise.id</div>
-        <button
-          onClick={toggleLang}
-          className="text-sm font-medium opacity-70 hover:opacity-100 transition-opacity"
-          aria-label="Cambiar idioma"
-        >
-          {t.nav.langToggle}
-        </button>
-      </nav>
-
-      <main className="flex-1 flex items-center justify-center px-6 md:px-12">
-        <div className="max-w-2xl mx-auto text-center">
-          <h1 className="text-4xl md:text-6xl font-medium leading-tight tracking-tight mb-6">
-            {t.hero.headline}
-          </h1>
-          <p className="text-base md:text-lg text-white/70 leading-relaxed mb-10 max-w-xl mx-auto">
-            {t.hero.sub}
-          </p>
-
-          {status === "success" || status === "duplicate" ? (
-            <div className="bg-white/5 border border-white/10 rounded-lg p-6 text-center max-w-md mx-auto">
-              <p className="text-xl font-medium mb-2">
-                {status === "duplicate" ? t.waitlist.duplicateTitle : t.waitlist.successTitle}
-              </p>
-              <p className="text-sm text-white/60">
-                {status === "duplicate" ? t.waitlist.duplicateMessage : t.waitlist.successMessage}
-              </p>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => { setEmail(e.target.value); setStatus("idle"); }}
-                placeholder={t.waitlist.emailPlaceholder}
-                disabled={status === "submitting"}
-                className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-white/30 transition-colors disabled:opacity-50"
-              />
-              <button
-                type="submit"
-                disabled={status === "submitting"}
-                className="px-6 py-3 bg-white text-black rounded-lg font-medium hover:bg-white/90 transition-colors disabled:opacity-50"
-              >
-                {status === "submitting" ? "..." : t.waitlist.submitButton}
-              </button>
-            </form>
-          )}
-
-          {status === "error" && (
-            <p className="mt-3 text-sm text-red-400">{t.waitlist.errorMessage}</p>
-          )}
+    <div className="flex-1 max-w-2xl mx-auto w-full px-5 sm:px-6 py-8 sm:py-12">
+      <header className="mb-10">
+        <div className="flex items-center justify-between mb-5">
+          <span className="text-white/40 text-xs">demo</span>
+          <span className="text-white/40 text-xs">paso {step} de {TOTAL_STEPS}</span>
         </div>
-      </main>
-
-      <footer className="px-6 md:px-12 py-6 border-t border-white/5">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-3 text-xs text-white/40">
-          <div>{t.footer.copyright}</div>
-          <div className="flex gap-6">
-            <a
-              href={`mailto:${PUBLIC_CONTACT_EMAIL}`}
-              className="hover:text-white/70 transition-colors"
-            >
-              {t.footer.contact}
-            </a>
-          </div>
+        <div className="w-full h-[2px] bg-white/10 rounded-full overflow-hidden">
+          <div
+            className="h-full bg-white/85 transition-[width] duration-500 ease-in-out"
+            style={{ width: `${progressPct}%` }}
+          />
         </div>
-      </footer>
+      </header>
+
+      <section>
+        {step === 1 && <Step1 onNext={next} />}
+        {step === 2 && (
+          <Step2
+            consents={consents}
+            usoLabel={usoLabel}
+            usoPct={usoPct}
+            usoHint={usoHint}
+            onToggle={toggleConsent}
+            onNext={next}
+            onPrev={prev}
+          />
+        )}
+        {step === 3 && <Step3 onNext={next} onPrev={prev} />}
+        {step === 4 && (
+          <Step4
+            contexto={contexto}
+            edad={edad}
+            proyecto={proyecto}
+            decision={decision}
+            trazaGuardada={trazaGuardada}
+            setContexto={setContexto}
+            setEdad={setEdad}
+            setProyecto={setProyecto}
+            setDecision={setDecision}
+            setTrazaGuardada={setTrazaGuardada}
+            onNext={next}
+            onPrev={prev}
+          />
+        )}
+        {step === 5 && (
+          <Step5
+            contexto={contexto}
+            edad={edad}
+            proyecto={proyecto}
+            decision={decision}
+            onNext={next}
+            onPrev={prev}
+          />
+        )}
+        {step === 6 && <Step6 onNext={next} onPrev={prev} />}
+        {step === 7 && <Step7 onPrev={prev} onReiniciar={reiniciar} />}
+      </section>
     </div>
   );
 }
