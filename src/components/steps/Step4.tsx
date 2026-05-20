@@ -120,7 +120,7 @@ export default function Step4(p: Props) {
       <div className="flex gap-3 flex-wrap">
         <Btn onClick={p.onPrev} variant="secondary">Atrás</Btn>
         {!p.trazaGuardada ? (
-          <Btn onClick={handleGuardar} disabled={!canSave}>Guardar traza</Btn>
+          <Btn onClick={handleGuardar} disabled={!canSave}>Guardar anotación</Btn>
         ) : (
           <Btn onClick={p.onNext}>Siguiente</Btn>
         )}
