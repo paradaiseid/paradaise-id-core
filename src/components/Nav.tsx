@@ -3,8 +3,10 @@
 import Link from "next/link";
 import { useState } from "react";
 import Logo from "./Logo";
+import ThemeToggle from "./ThemeToggle";
 
 const NAV_LINKS = [
+  { href: "/", label: "Demo" },
   { href: "/manifesto", label: "Manifiesto" },
   { href: "/inversionistas", label: "Inversionistas" },
   { href: "/contacto", label: "Contacto" },
@@ -47,6 +49,7 @@ export default function Nav() {
           >
             ES <span className="text-white/25">·</span> EN
           </button>
+          <ThemeToggle />
         </div>
 
         <button
