@@ -244,13 +244,11 @@ export default function Simulation() {
         </div>
       </div>
 
-      <p className="text-white/30 text-xs mb-2">↑ uso real cruzando herramientas</p>
-
       {/* Análisis */}
       <div className="mt-6 px-5 py-4 rounded-xl bg-cyan-300/[0.04] border border-cyan-300/15">
         <div className="text-[10px] uppercase tracking-[0.12em] text-cyan-300/70 mb-3 flex items-center gap-2">
           <span className="inline-block w-1.5 h-1.5 rounded-full bg-cyan-300/85 animate-pulse" />
-          paradaise está leyendo este patrón contigo
+          paradaise está conectando este contexto
         </div>
 
         <div>

@@ -7,10 +7,10 @@ export default function Step3({ onNext, onPrev }: { onNext: () => void; onPrev: 
   return (
     <div>
       <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight mb-3">
-        Así se ve cuando empieza a entenderte
+        Tu continuidad empieza sola
       </h2>
       <p className="text-white/60 text-sm sm:text-base mb-6 leading-relaxed">
-        No es magia, es continuidad. Arriba es tu uso real cruzando herramientas. Abajo es lo que paradaise va detectando contigo.
+        No necesitas etiquetar, limpiar ni reorganizar tu vida digital. paradaise empieza a conectar contexto mientras usas tus herramientas normalmente.
       </p>
 
       <Simulation />
