@@ -28,7 +28,13 @@ export default function DemoPage() {
     scrollToTop();
   };
   const prev = () => {
-    setStep((s) => Math.max(1, s - 1));
+    setStep((s) => {
+      const target = Math.max(1, s - 1);
+      // Si el usuario regresa al Step 4 desde un step posterior, permitirle editar
+      // el ejemplo de nuevo (resetear el flag de "ya guardado").
+      if (target === 4) setTrazaGuardada(false);
+      return target;
+    });
     scrollToTop();
   };
   const progressPct = (step / TOTAL_STEPS) * 100;

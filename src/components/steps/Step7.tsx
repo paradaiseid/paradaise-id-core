@@ -18,6 +18,7 @@ export default function Step7({ onPrev, onReiniciar }: Props) {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [registered, setRegistered] = useState(false);
+  const [alreadyIn, setAlreadyIn] = useState(false);
 
   // Post-success
   const [accesoAbierto, setAccesoAbierto] = useState(false);
@@ -57,6 +58,9 @@ export default function Step7({ onPrev, onReiniciar }: Props) {
       });
       const data = await res.json();
       if (res.ok && data.ok) {
+        // El backend marca `duplicate: true` si el email ya estaba.
+        // Lo tratamos como signup exitoso (registered = true) con mensaje distinto.
+        if (data.duplicate) setAlreadyIn(true);
         setRegistered(true);
       } else {
         setSubmitError("Algo no salió bien. Inténtalo de nuevo en un momento.");
@@ -76,7 +80,9 @@ export default function Step7({ onPrev, onReiniciar }: Props) {
   if (registered) {
     return (
       <div>
-        <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight mb-3">Estás dentro</h2>
+        <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight mb-3">
+          {alreadyIn ? "Ya estás en la lista" : "Estás dentro"}
+        </h2>
         <p className="text-white/70 text-base mb-6 leading-relaxed">Te avisamos cuando abramos accesos.</p>
 
         <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5 mb-4">
@@ -131,10 +137,10 @@ export default function Step7({ onPrev, onReiniciar }: Props) {
 
         <div className="flex flex-col sm:flex-row gap-3">
           <a
-            href="/manifesto"
+            href="/"
             className="px-6 py-3 rounded-full font-medium text-sm bg-white text-black hover:bg-white/90 transition-opacity inline-flex items-center justify-center"
           >
-            → Manifesto
+            → Inicio
           </a>
           <Btn onClick={onReiniciar} variant="secondary">Ver el demo otra vez</Btn>
         </div>

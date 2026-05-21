@@ -19,7 +19,7 @@ export default function Step4(p: Props) {
   return (
     <div>
       <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight mb-3">
-        Si quieres, dale un ejemplo
+        Si quieres, te doy un ejemplo
       </h2>
       <p className="text-white/60 text-sm sm:text-base mb-6 leading-relaxed">
         Esto es opcional. paradaise funciona contigo aunque no escribas nada aquí.

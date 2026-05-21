@@ -15,8 +15,11 @@ export default function Step1({ onNext }: { onNext: () => void }) {
       <p className="text-white/70 text-base sm:text-lg leading-relaxed mb-3 max-w-lg">
         Sin instalar nada.
       </p>
-      <p className="text-white/70 text-base sm:text-lg leading-relaxed mb-10 max-w-lg">
+      <p className="text-white/70 text-base sm:text-lg leading-relaxed mb-6 max-w-lg">
         Sin cuenta.
+      </p>
+      <p className="text-white/40 text-[11px] uppercase tracking-[0.2em] mb-10">
+        No olvides que puedes interactuar con la aplicación.
       </p>
       <Btn onClick={onNext}>Empezar</Btn>
     </div>
