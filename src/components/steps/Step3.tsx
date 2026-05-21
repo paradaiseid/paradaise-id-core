@@ -7,10 +7,10 @@ export default function Step3({ onNext, onPrev }: { onNext: () => void; onPrev: 
   return (
     <div>
       <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight mb-3">
-        Tu continuidad empieza sola
+        Un ejemplo de cómo alguien hace su vida normal.
       </h2>
       <p className="text-white/60 text-sm sm:text-base mb-6 leading-relaxed">
-        No necesitas etiquetar, limpiar ni reorganizar tu vida digital. paradaise empieza a conectar contexto mientras usas tus herramientas normalmente.
+        Como ves, tú no haces nada. paradaise empieza a conectar lo que ya estás haciendo.
       </p>
 
       <Simulation />

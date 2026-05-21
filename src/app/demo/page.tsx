@@ -8,7 +8,7 @@ import Step4 from "@/components/steps/Step4";
 import Step5 from "@/components/steps/Step5";
 import Step6 from "@/components/steps/Step6";
 import Step7 from "@/components/steps/Step7";
-import type { Consents, Contexto, Edad } from "@/components/steps/types";
+import type { Consents } from "@/components/steps/types";
 
 const TOTAL_STEPS = 7;
 
@@ -16,10 +16,8 @@ export default function DemoPage() {
   const [step, setStep] = useState<number>(1);
   const [consents, setConsents] = useState<Consents>({ ia: true, notas: true, busquedas: true, browser: true });
 
-  const [contexto, setContexto] = useState<Contexto>(null);
-  const [edad, setEdad] = useState<Edad>(null);
-  const [proyecto, setProyecto] = useState<string>("");
-  const [decision, setDecision] = useState<string>("");
+  // Input opcional del usuario (textarea libre en Step 4).
+  const [ejemplo, setEjemplo] = useState<string>("");
   const [trazaGuardada, setTrazaGuardada] = useState<boolean>(false);
 
   const scrollToTop = () => {
@@ -37,17 +35,17 @@ export default function DemoPage() {
 
   const activos = Object.values(consents).filter(Boolean).length;
   const usoPct = Math.round((activos / 4) * 100);
-  let usoLabel = "Uso optimo";
-  let usoHint = "Mas contexto crea mejoras y continuidad mas precisa.";
+  let usoLabel = "Todo conectado";
+  let usoHint = "Mientras más conectes, más útil se vuelve paradaise.";
   if (usoPct < 100 && usoPct >= 75) {
-    usoLabel = "Uso recomendado";
-    usoHint = "Buen nivel de contexto. La continuidad va a sentirse natural.";
+    usoLabel = "Casi todo conectado";
+    usoHint = "Buen nivel. paradaise va a sentirse natural.";
   } else if (usoPct < 75 && usoPct >= 50) {
-    usoLabel = "Uso basico";
-    usoHint = "Contexto limitado. Las mejoras van a ser mas generales.";
+    usoLabel = "Conectado a la mitad";
+    usoHint = "Va a ayudarte, pero hay áreas que no estamos viendo.";
   } else if (usoPct < 50) {
-    usoLabel = "Uso solo para prueba";
-    usoHint = "No recomendable. No hay suficiente contexto con este nivel.";
+    usoLabel = "Casi nada conectado";
+    usoHint = "Activa más opciones para que paradaise pueda ayudarte de verdad.";
   }
 
   const toggleConsent = (k: keyof Consents) => {
@@ -58,10 +56,7 @@ export default function DemoPage() {
   const reiniciar = () => {
     setStep(1);
     setConsents({ ia: true, notas: true, busquedas: true, browser: true });
-    setContexto(null);
-    setEdad(null);
-    setProyecto("");
-    setDecision("");
+    setEjemplo("");
     setTrazaGuardada(false);
     scrollToTop();
   };
@@ -96,15 +91,9 @@ export default function DemoPage() {
         {step === 3 && <Step3 onNext={next} onPrev={prev} />}
         {step === 4 && (
           <Step4
-            contexto={contexto}
-            edad={edad}
-            proyecto={proyecto}
-            decision={decision}
+            ejemplo={ejemplo}
             trazaGuardada={trazaGuardada}
-            setContexto={setContexto}
-            setEdad={setEdad}
-            setProyecto={setProyecto}
-            setDecision={setDecision}
+            setEjemplo={setEjemplo}
             setTrazaGuardada={setTrazaGuardada}
             onNext={next}
             onPrev={prev}
@@ -112,10 +101,7 @@ export default function DemoPage() {
         )}
         {step === 5 && (
           <Step5
-            contexto={contexto}
-            edad={edad}
-            proyecto={proyecto}
-            decision={decision}
+            ejemplo={ejemplo}
             onNext={next}
             onPrev={prev}
           />
