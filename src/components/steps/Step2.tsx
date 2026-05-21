@@ -15,17 +15,17 @@ interface Props {
 
 export default function Step2({ consents, usoLabel, usoPct, usoHint, onToggle, onNext, onPrev }: Props) {
   const toggles: Array<{ key: keyof Consents; label: string; sub: string; locked?: boolean }> = [
-    { key: "ia", label: "Conversaciones con IA", sub: "Las conversaciones donde normalmente el contexto se pierde.", locked: true },
-    { key: "notas", label: "Lo que todavía estás construyendo", sub: "Las ideas importantes no deberían perderse entre ventanas." },
-    { key: "busquedas", label: "Lo que vuelves a buscar", sub: "Las búsquedas más sencillas donde pierdes 15 minutos." },
-    { key: "browser", label: "Continuidad entre herramientas", sub: "Cómo se conectan tus espacios digitales a lo largo del día." },
+    { key: "ia", label: "Conversaciones con IA", sub: "Para que no se pierdan los chats que sí importan.", locked: true },
+    { key: "notas", label: "Notas e ideas", sub: "Para que las ideas no se queden olvidadas." },
+    { key: "busquedas", label: "Lo que vuelves a buscar", sub: "Para que tus consultas no se pierdan." },
+    { key: "browser", label: "Tu día entre apps", sub: "Para que no empieces desde cero cada vez que cambias de pantalla." },
   ];
 
   return (
     <div>
-      <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight mb-3">Tú decides qué mejoras</h2>
+      <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight mb-3">¿Qué quieres conectar?</h2>
       <p className="text-white/60 text-sm sm:text-base mb-8 leading-relaxed">
-        Tu trabajo ya deja suficientes señales. paradaise solo empieza a conectarlas.
+        Cada opción es algo que tú activas si quieres. Nada entra sin tu permiso.
       </p>
 
       <div className="space-y-5 mb-6">
