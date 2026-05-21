@@ -5,10 +5,11 @@ import { usePathname } from "next/navigation";
 
 type FooterLink = { href: string; label: string };
 
+// "Inversionistas" intencionalmente NO listado — la página sigue existiendo pero no se anuncia
+// porque rompe la lectura mom-friendly (activa "ah, startup levantando lana").
 const FOOTER_LINKS_ES: FooterLink[] = [
   { href: "/about", label: "Nosotros" },
   { href: "/manifesto", label: "Manifiesto" },
-  { href: "/inversionistas", label: "Inversionistas" },
   { href: "/privacy", label: "Privacidad" },
   { href: "/contacto", label: "Contacto" },
 ];
@@ -16,7 +17,6 @@ const FOOTER_LINKS_ES: FooterLink[] = [
 const FOOTER_LINKS_EN: FooterLink[] = [
   { href: "/en/about", label: "About" },
   { href: "/en/manifesto", label: "Manifesto" },
-  { href: "/en/inversionistas", label: "Investors" },
   { href: "/en/privacy", label: "Privacy" },
   { href: "/en/contacto", label: "Contact" },
 ];

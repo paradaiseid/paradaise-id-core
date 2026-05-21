@@ -8,14 +8,16 @@ import ThemeToggle from "./ThemeToggle";
 
 type NavLink = { href: string; label: string };
 
-// Nav top: minimal. Solo Demo + Únete (anchor a #waitlist).
-// Nosotros, Contacto, Manifiesto, Inversionistas, Privacidad viven en el footer.
+// Nav top: Nosotros + Demo + Únete (anchor a #waitlist).
+// Contacto, Manifiesto y Privacidad viven en el footer. Inversionistas oculto (sigue accesible vía URL directa).
 const NAV_LINKS_ES: NavLink[] = [
+  { href: "/about", label: "Nosotros" },
   { href: "/demo", label: "Demo" },
   { href: "/#waitlist", label: "Únete" },
 ];
 
 const NAV_LINKS_EN: NavLink[] = [
+  { href: "/en/about", label: "About" },
   { href: "/en/demo", label: "Demo" },
   { href: "/en/#waitlist", label: "Join" },
 ];
