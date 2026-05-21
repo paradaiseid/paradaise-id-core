@@ -32,12 +32,12 @@ export default function Footer() {
         <p className="text-white/30 text-xs">
           Copyright © 2026 paradaise.id — All Rights Reserved.
         </p>
-        <nav className="flex flex-wrap gap-4" aria-label={lang === "en" ? "Footer" : "Pie de página"}>
+        <nav className="flex flex-wrap gap-5" aria-label={lang === "en" ? "Footer" : "Pie de página"}>
           {links.map((l) => (
             <Link
               key={l.href}
               href={l.href}
-              className="text-white/40 hover:text-white/70 text-xs transition-colors"
+              className="text-white/65 hover:text-white text-sm transition-colors"
             >
               {l.label}
             </Link>
