@@ -1,12 +1,48 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+type FooterLink = { href: string; label: string };
+
+const FOOTER_LINKS_ES: FooterLink[] = [
+  { href: "/manifesto", label: "Manifiesto" },
+  { href: "/inversionistas", label: "Inversionistas" },
+  { href: "/privacy", label: "Privacidad" },
+];
+
+const FOOTER_LINKS_EN: FooterLink[] = [
+  { href: "/en/manifesto", label: "Manifesto" },
+  { href: "/en/inversionistas", label: "Investors" },
+  { href: "/en/privacy", label: "Privacy" },
+];
+
+function detectLang(pathname: string): "es" | "en" {
+  return pathname === "/en" || pathname.startsWith("/en/") ? "en" : "es";
+}
+
 export default function Footer() {
+  const pathname = usePathname() || "/";
+  const lang = detectLang(pathname);
+  const links = lang === "en" ? FOOTER_LINKS_EN : FOOTER_LINKS_ES;
+
   return (
     <footer className="border-t border-white/5 py-6 mt-12">
-      <div className="max-w-5xl mx-auto px-5 sm:px-8">
+      <div className="max-w-5xl mx-auto px-5 sm:px-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <p className="text-white/30 text-xs">
           Copyright © 2026 paradaise.id — All Rights Reserved.
         </p>
+        <nav className="flex flex-wrap gap-4" aria-label={lang === "en" ? "Footer" : "Pie de página"}>
+          {links.map((l) => (
+            <Link
+              key={l.href}
+              href={l.href}
+              className="text-white/40 hover:text-white/70 text-xs transition-colors"
+            >
+              {l.label}
+            </Link>
+          ))}
+        </nav>
       </div>
     </footer>
   );

@@ -8,21 +8,17 @@ import ThemeToggle from "./ThemeToggle";
 
 type NavLink = { href: string; label: string };
 
+// Nav top: solo lo que un visitante nuevo necesita ver primero.
+// Manifiesto, Inversionistas y Privacidad viven en el footer (links institucionales).
 const NAV_LINKS_ES: NavLink[] = [
   { href: "/", label: "Demo" },
-  { href: "/manifesto", label: "Manifiesto" },
-  { href: "/inversionistas", label: "Inversionistas" },
   { href: "/contacto", label: "Contacto" },
-  { href: "/privacy", label: "Privacidad" },
   { href: "/about", label: "Nosotros" },
 ];
 
 const NAV_LINKS_EN: NavLink[] = [
   { href: "/en", label: "Demo" },
-  { href: "/en/manifesto", label: "Manifesto" },
-  { href: "/en/inversionistas", label: "Investors" },
   { href: "/en/contacto", label: "Contact" },
-  { href: "/en/privacy", label: "Privacy" },
   { href: "/en/about", label: "About" },
 ];
 

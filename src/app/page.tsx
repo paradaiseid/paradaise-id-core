@@ -1,127 +1,178 @@
+// src/app/page.tsx
+// MamaLanding — home pública de paradaise.id
+// Doctrina: lenguaje cotidiano, sin jerga. La prueba es que la mamá lo entienda.
+// El demo interactivo de 7 pasos vive en /demo (link desde "¿Cómo funciona?")
+
 "use client";
 
-import { useState } from "react";
-import Step1 from "@/components/steps/Step1";
-import Step2 from "@/components/steps/Step2";
-import Step3 from "@/components/steps/Step3";
-import Step4 from "@/components/steps/Step4";
-import Step5 from "@/components/steps/Step5";
-import Step6 from "@/components/steps/Step6";
-import Step7 from "@/components/steps/Step7";
-import type { Consents, Contexto, Edad } from "@/components/steps/types";
+import { useState, type ChangeEvent } from "react";
+import Link from "next/link";
 
-const TOTAL_STEPS = 7;
+const WAITLIST_LANG = "es";
 
-export default function Home() {
-  const [step, setStep] = useState<number>(1);
-  const [consents, setConsents] = useState<Consents>({ ia: true, notas: true, busquedas: true, browser: true });
+export default function MamaLanding() {
+  const [email, setEmail] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const [contexto, setContexto] = useState<Contexto>(null);
-  const [edad, setEdad] = useState<Edad>(null);
-  const [proyecto, setProyecto] = useState<string>("");
-  const [decision, setDecision] = useState<string>("");
-  const [trazaGuardada, setTrazaGuardada] = useState<boolean>(false);
+  const isValidEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
 
-  const scrollToTop = () => {
-    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-  const next = () => {
-    setStep((s) => Math.min(TOTAL_STEPS, s + 1));
-    scrollToTop();
-  };
-  const prev = () => {
-    setStep((s) => Math.max(1, s - 1));
-    scrollToTop();
-  };
-  const progressPct = (step / TOTAL_STEPS) * 100;
-
-  const activos = Object.values(consents).filter(Boolean).length;
-  const usoPct = Math.round((activos / 4) * 100);
-  let usoLabel = "Uso optimo";
-  let usoHint = "Mas contexto crea mejoras y continuidad mas precisa.";
-  if (usoPct < 100 && usoPct >= 75) {
-    usoLabel = "Uso recomendado";
-    usoHint = "Buen nivel de contexto. La continuidad va a sentirse natural.";
-  } else if (usoPct < 75 && usoPct >= 50) {
-    usoLabel = "Uso basico";
-    usoHint = "Contexto limitado. Las mejoras van a ser mas generales.";
-  } else if (usoPct < 50) {
-    usoLabel = "Uso solo para prueba";
-    usoHint = "No recomendable. No hay suficiente contexto con este nivel.";
-  }
-
-  const toggleConsent = (k: keyof Consents) => {
-    if (k === "ia") return;
-    setConsents((c) => ({ ...c, [k]: !c[k] }));
+  const onSubmit = async () => {
+    if (!isValidEmail(email) || submitting) return;
+    setSubmitting(true);
+    setSubmitError(null);
+    try {
+      const res = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.toLowerCase().trim(), lang: WAITLIST_LANG }),
+      });
+      const data = await res.json();
+      if (res.ok && data.ok) {
+        setSubmitted(true);
+      } else {
+        setSubmitError("Algo no salió bien. Inténtalo de nuevo en un momento.");
+      }
+    } catch {
+      setSubmitError("Algo no salió bien. Inténtalo de nuevo en un momento.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  const reiniciar = () => {
-    setStep(1);
-    setConsents({ ia: true, notas: true, busquedas: true, browser: true });
-    setContexto(null);
-    setEdad(null);
-    setProyecto("");
-    setDecision("");
-    setTrazaGuardada(false);
-    scrollToTop();
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+    if (submitError) setSubmitError(null);
   };
 
   return (
-    <div className="flex-1 max-w-2xl mx-auto w-full px-5 sm:px-6 py-8 sm:py-12">
-      {/* Header del demo: solo a partir del paso 2 (paso 1 es el hero limpio) */}
-      {step > 1 && (
-        <header className="mb-10">
-          <div className="w-full h-[2px] bg-white/10 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-white/85 transition-[width] duration-500 ease-in-out"
-              style={{ width: `${progressPct}%` }}
-            />
-          </div>
-        </header>
-      )}
+    <div className="flex-1 max-w-3xl mx-auto w-full px-5 sm:px-8 py-10 sm:py-16">
+      {/* HERO */}
+      <section className="mb-20 sm:mb-28">
+        <h1 className="text-3xl sm:text-5xl font-semibold text-white tracking-tight leading-tight mb-6">
+          Una aplicación para tu celular y computadora<br />
+          que te ayuda a no perderte entre todo lo que ya haces.
+        </h1>
+        <p className="text-white/70 text-lg sm:text-xl leading-relaxed max-w-2xl">
+          Como tener un asistente que no olvida tus pendientes mientras tú sigues haciendo tu vida normal.
+        </p>
+      </section>
 
-      <section>
-        {step === 1 && <Step1 onNext={next} />}
-        {step === 2 && (
-          <Step2
-            consents={consents}
-            usoLabel={usoLabel}
-            usoPct={usoPct}
-            usoHint={usoHint}
-            onToggle={toggleConsent}
-            onNext={next}
-            onPrev={prev}
-          />
+      {/* ¿CUÁL ES EL PROBLEMA? */}
+      <section className="mb-20 sm:mb-28">
+        <p className="text-white/40 text-xs uppercase tracking-[0.2em] mb-4">¿Cuál es el problema?</p>
+        <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight mb-6 leading-snug">
+          La vida ya es demasiado compleja como para además tener que organizarla.
+        </h2>
+        <p className="text-white/70 text-base sm:text-lg leading-relaxed max-w-2xl">
+          Estás saturado. La vida no para — trabajo, hijos, escuela, amigos, recados, ideas.
+          Anotar todo manualmente ya no funciona. Las agendas, celulares y computadoras se dispersan.
+          paradaise empieza a conectarlas sin esfuerzo adicional.
+        </p>
+      </section>
+
+      {/* ¿CÓMO FUNCIONA? */}
+      <section className="mb-20 sm:mb-28">
+        <p className="text-white/40 text-xs uppercase tracking-[0.2em] mb-4">¿Cómo funciona?</p>
+        <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight mb-6 leading-snug">
+          La instalas una vez y empieza a ayudarte<br />
+          mientras usas normalmente tu celular y tu computadora.
+        </h2>
+        <Link
+          href="/demo"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-black font-medium text-sm hover:bg-white/90 transition-opacity"
+        >
+          Ver app interactiva
+          <span className="text-black/60 text-xs">(1 minuto)</span>
+          <span aria-hidden>→</span>
+        </Link>
+      </section>
+
+      {/* ¿QUÉ TIENES QUE HACER DESPUÉS? */}
+      <section className="mb-20 sm:mb-28">
+        <p className="text-white/40 text-xs uppercase tracking-[0.2em] mb-4">¿Qué tienes que hacer después?</p>
+        <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight mb-6 leading-snug">
+          Nada. Seguir tu vida normal.
+        </h2>
+        <p className="text-white/70 text-base sm:text-lg leading-relaxed mb-5 max-w-2xl">
+          Cuando lo necesites, abres paradaise y puedes ver:
+        </p>
+        <ul className="space-y-3 text-white/75 text-base sm:text-lg leading-relaxed max-w-2xl">
+          <li className="flex gap-3"><span className="text-white/40">·</span><span>tus pendientes</span></li>
+          <li className="flex gap-3"><span className="text-white/40">·</span><span>acciones rápidas que destraban tu día</span></li>
+          <li className="flex gap-3"><span className="text-white/40">·</span><span>ideas importantes que no quieres perder</span></li>
+          <li className="flex gap-3"><span className="text-white/40">·</span><span>continuidad entre conversaciones</span></li>
+          <li className="flex gap-3"><span className="text-white/40">·</span><span>y cómo estás usando tu tiempo digital</span></li>
+        </ul>
+      </section>
+
+      {/* PRIVACIDAD */}
+      <section className="mb-20 sm:mb-28">
+        <p className="text-white/40 text-xs uppercase tracking-[0.2em] mb-4">Privacidad</p>
+        <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight mb-8 leading-snug">
+          Tu información. Tus reglas.
+        </h2>
+
+        <div className="grid sm:grid-cols-3 gap-4 mb-6">
+          <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5">
+            <div className="text-white/40 text-[11px] uppercase tracking-wider mb-3">Qué ve</div>
+            <p className="text-white/80 text-sm leading-relaxed">
+              Solo los espacios que tú decides conectar.
+            </p>
+          </div>
+          <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5">
+            <div className="text-white/40 text-[11px] uppercase tracking-wider mb-3">Qué nunca ve</div>
+            <p className="text-white/80 text-sm leading-relaxed">
+              Nunca tu micrófono. Nunca tu cámara. Nunca espacios no activados.
+            </p>
+          </div>
+          <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5">
+            <div className="text-white/40 text-[11px] uppercase tracking-wider mb-3">Dónde vive</div>
+            <p className="text-white/80 text-sm leading-relaxed">
+              En infraestructura privada y segura asociada a tu cuenta.
+            </p>
+          </div>
+        </div>
+
+        <p className="text-white/55 text-sm">Nunca vendemos tus datos personales.</p>
+      </section>
+
+      {/* WAITLIST */}
+      <section className="mb-12">
+        <p className="text-white/40 text-xs uppercase tracking-[0.2em] mb-4">Empieza</p>
+        <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight mb-6 leading-snug">
+          Estás a un correo de empezar.
+        </h2>
+
+        {submitted ? (
+          <div className="rounded-xl border border-cyan-300/30 bg-cyan-300/[0.05] p-5 max-w-xl">
+            <p className="text-white text-base font-medium mb-1">Estás dentro.</p>
+            <p className="text-white/65 text-sm leading-relaxed">
+              Te avisamos cuando abramos accesos. Mientras tanto, si quieres ver cómo se siente,
+              {" "}<Link href="/demo" className="text-cyan-300/90 underline underline-offset-4 hover:text-cyan-200">ve la app interactiva</Link>.
+            </p>
+          </div>
+        ) : (
+          <div className="flex flex-col sm:flex-row gap-3 max-w-xl">
+            <input
+              type="email"
+              value={email}
+              onChange={onChange}
+              placeholder="tu@email.com"
+              className="flex-1 px-4 py-3 rounded-lg text-sm bg-white/[0.04] border border-white/15 text-white/90 focus:outline-none focus:border-white/50 transition-colors"
+            />
+            <button
+              type="button"
+              onClick={onSubmit}
+              disabled={!isValidEmail(email) || submitting}
+              className="px-6 py-3 rounded-full font-medium text-sm bg-white text-black hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
+            >
+              {submitting ? "..." : "Reservar mi acceso →"}
+            </button>
+          </div>
         )}
-        {step === 3 && <Step3 onNext={next} onPrev={prev} />}
-        {step === 4 && (
-          <Step4
-            contexto={contexto}
-            edad={edad}
-            proyecto={proyecto}
-            decision={decision}
-            trazaGuardada={trazaGuardada}
-            setContexto={setContexto}
-            setEdad={setEdad}
-            setProyecto={setProyecto}
-            setDecision={setDecision}
-            setTrazaGuardada={setTrazaGuardada}
-            onNext={next}
-            onPrev={prev}
-          />
-        )}
-        {step === 5 && (
-          <Step5
-            contexto={contexto}
-            edad={edad}
-            proyecto={proyecto}
-            decision={decision}
-            onNext={next}
-            onPrev={prev}
-          />
-        )}
-        {step === 6 && <Step6 onNext={next} onPrev={prev} />}
-        {step === 7 && <Step7 onPrev={prev} onReiniciar={reiniciar} />}
+        {submitError && <p className="text-red-400/80 text-xs mt-3">{submitError}</p>}
       </section>
     </div>
   );
