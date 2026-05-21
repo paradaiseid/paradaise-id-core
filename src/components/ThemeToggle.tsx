@@ -74,11 +74,10 @@ export default function ThemeToggle() {
         strokeLinejoin="round"
         aria-hidden="true"
       >
+        {/* Icono del modo ACTUAL — luna si estás en oscuro, sol si estás en claro.
+            Color hereda de currentColor (text-white/45 en dark → claro / text-black por inversión CSS en light → oscuro). */}
         {isLight ? (
-          // moon — para volver a oscuro
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" />
-        ) : (
-          // sun — para activar claro
+          // sun — actualmente en modo claro
           <>
             <circle cx="12" cy="12" r="4" />
             <path d="M12 2v2" />
@@ -90,6 +89,9 @@ export default function ThemeToggle() {
             <path d="M4.93 19.07l1.41-1.41" />
             <path d="M17.66 6.34l1.41-1.41" />
           </>
+        ) : (
+          // moon — actualmente en modo oscuro
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" />
         )}
       </svg>
     </button>

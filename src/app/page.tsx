@@ -52,13 +52,13 @@ export default function MamaLanding() {
   };
 
   return (
-    <div className="flex-1 max-w-3xl mx-auto w-full px-5 sm:px-8 py-10 sm:py-16">
+    <div className="flex-1 max-w-5xl mx-auto w-full px-5 sm:px-10 py-10 sm:py-16">
       {/* HERO */}
       <section className="mb-14 sm:mb-20">
-        <h1 className="text-[28px] sm:text-[40px] font-semibold text-white tracking-tight leading-[1.15] mb-5 max-w-3xl">
+        <h1 className="text-3xl sm:text-5xl font-semibold text-white tracking-tight leading-[1.15] mb-5 max-w-4xl">
           Una aplicación para tu celular y computadora que te ayuda a no perderte entre todo lo que ya haces.
         </h1>
-        <p className="text-white/70 text-base sm:text-lg leading-relaxed max-w-2xl">
+        <p className="text-white/70 text-lg sm:text-xl leading-relaxed max-w-3xl">
           Como tener un asistente que no olvida tus pendientes mientras tú sigues haciendo tu vida normal.
         </p>
       </section>
@@ -66,10 +66,10 @@ export default function MamaLanding() {
       {/* ¿CUÁL ES EL PROBLEMA? */}
       <section className="mb-14 sm:mb-20">
         <p className="text-white/40 text-[11px] uppercase tracking-[0.2em] mb-3">¿Cuál es el problema?</p>
-        <h2 className="text-xl sm:text-2xl font-semibold text-white tracking-tight mb-4 leading-snug max-w-2xl">
+        <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight mb-4 leading-snug max-w-3xl">
           La vida ya es demasiado compleja como para además tener que organizarla.
         </h2>
-        <p className="text-white/70 text-base leading-relaxed max-w-2xl">
+        <p className="text-white/70 text-base sm:text-lg leading-relaxed max-w-3xl">
           Estás saturado. La vida no para — trabajo, hijos, escuela, amigos, recados, ideas.
           Anotar todo manualmente ya no funciona. Las agendas, celulares y computadoras se dispersan.
           paradaise empieza a conectarlas sin esfuerzo adicional.
@@ -79,7 +79,7 @@ export default function MamaLanding() {
       {/* ¿CÓMO FUNCIONA? */}
       <section className="mb-14 sm:mb-20">
         <p className="text-white/40 text-[11px] uppercase tracking-[0.2em] mb-3">¿Cómo funciona?</p>
-        <h2 className="text-xl sm:text-2xl font-semibold text-white tracking-tight mb-5 leading-snug max-w-2xl">
+        <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight mb-5 leading-snug max-w-3xl">
           La instalas una vez y empieza a ayudarte mientras usas normalmente tu celular y tu computadora.
         </h2>
         <Link
@@ -94,13 +94,13 @@ export default function MamaLanding() {
       {/* ¿QUÉ TIENES QUE HACER DESPUÉS? */}
       <section className="mb-14 sm:mb-20">
         <p className="text-white/40 text-[11px] uppercase tracking-[0.2em] mb-3">¿Qué tienes que hacer después?</p>
-        <h2 className="text-xl sm:text-2xl font-semibold text-white tracking-tight mb-4 leading-snug">
+        <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight mb-4 leading-snug">
           Nada. Seguir tu vida normal.
         </h2>
-        <p className="text-white/70 text-base leading-relaxed mb-4 max-w-2xl">
+        <p className="text-white/70 text-base sm:text-lg leading-relaxed mb-4 max-w-3xl">
           Cuando lo necesites, abres paradaise y puedes ver:
         </p>
-        <ul className="space-y-1 text-white/75 text-base leading-snug max-w-2xl">
+        <ul className="space-y-1 text-white/75 text-base sm:text-lg leading-snug max-w-3xl">
           <li className="flex gap-2"><span className="text-white/40">·</span><span>tus pendientes</span></li>
           <li className="flex gap-2"><span className="text-white/40">·</span><span>acciones rápidas que destraban tu día</span></li>
           <li className="flex gap-2"><span className="text-white/40">·</span><span>ideas importantes que no quieres perder</span></li>
@@ -112,7 +112,7 @@ export default function MamaLanding() {
       {/* PRIVACIDAD */}
       <section className="mb-14 sm:mb-20">
         <p className="text-white/40 text-[11px] uppercase tracking-[0.2em] mb-3">Privacidad</p>
-        <h2 className="text-xl sm:text-2xl font-semibold text-white tracking-tight mb-6 leading-snug">
+        <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight mb-6 leading-snug">
           Tu información. Tus reglas.
         </h2>
 
@@ -142,7 +142,7 @@ export default function MamaLanding() {
 
       {/* WAITLIST */}
       <section className="mb-12">
-        <p className="text-white/40 text-xs uppercase tracking-[0.2em] mb-4">Empieza</p>
+        <p className="text-white/40 text-[11px] uppercase tracking-[0.2em] mb-3">Empieza</p>
         <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight mb-6 leading-snug">
           Estás a un correo de empezar.
         </h2>

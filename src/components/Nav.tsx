@@ -62,7 +62,8 @@ export default function Nav() {
           <Logo size="nav" />
         </Link>
 
-        <div className="hidden md:flex items-center gap-7">
+        {/* Links centrados ocupando el espacio entre logo y utilities */}
+        <div className="hidden md:flex flex-1 items-center justify-center gap-10 px-6">
           {links.map((l) => (
             <Link
               key={l.href}
@@ -72,10 +73,14 @@ export default function Nav() {
               {l.label}
             </Link>
           ))}
+        </div>
+
+        {/* Utilities a la derecha: language toggle + tema */}
+        <div className="hidden md:flex items-center gap-3">
           <button
             type="button"
             onClick={toggleLang}
-            className="text-white/40 hover:text-white/80 text-[12px] transition-colors ml-2"
+            className="text-white/40 hover:text-white/80 text-[12px] transition-colors"
             aria-label={lang === "es" ? "Switch to English" : "Cambiar a Español"}
             title={lang === "es" ? "Switch to English" : "Cambiar a Español"}
           >
