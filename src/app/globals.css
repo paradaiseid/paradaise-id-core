@@ -19,6 +19,10 @@
   --font-mono: var(--font-geist-mono);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 html, body {
   background: #000000;
   color: rgba(255, 255, 255, 0.7);

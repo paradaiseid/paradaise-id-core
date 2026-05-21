@@ -8,19 +8,16 @@ import ThemeToggle from "./ThemeToggle";
 
 type NavLink = { href: string; label: string };
 
-// Nav top: solo lo que un visitante nuevo necesita ver primero.
-// Orden: Nosotros · Demo · Contacto — primero quién somos, luego producto, luego cómo contactarnos.
-// Manifiesto, Inversionistas y Privacidad viven en el footer (links institucionales).
+// Nav top: minimal. Solo Demo + Únete (anchor a #waitlist).
+// Nosotros, Contacto, Manifiesto, Inversionistas, Privacidad viven en el footer.
 const NAV_LINKS_ES: NavLink[] = [
-  { href: "/about", label: "Nosotros" },
   { href: "/demo", label: "Demo" },
-  { href: "/contacto", label: "Contacto" },
+  { href: "/#waitlist", label: "Únete" },
 ];
 
 const NAV_LINKS_EN: NavLink[] = [
-  { href: "/en/about", label: "About" },
   { href: "/en/demo", label: "Demo" },
-  { href: "/en/contacto", label: "Contact" },
+  { href: "/en/#waitlist", label: "Join" },
 ];
 
 function detectLang(pathname: string): "es" | "en" {
