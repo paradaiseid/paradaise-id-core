@@ -273,7 +273,7 @@ export default function Simulation() {
         </div>
 
         <div className="mt-4 flex items-center gap-2.5 text-[11px] text-white/40">
-          <span>ciclo</span>
+          <span>animación</span>
           <div className="flex-1 h-[2px] bg-white/[0.06] rounded-full overflow-hidden max-w-[200px]">
             <div className="h-full bg-cyan-300/55 transition-all" style={{ width: `${loopPct}%` }} />
           </div>

@@ -73,6 +73,82 @@ export function waitlistConfirmEmail(opts: {
 }
 
 // =====================================================================
+// Invitation email — un usuario en la waitlist invita a un tercero.
+// =====================================================================
+
+export type InvitationEmailTemplate = {
+  subject: string;
+  html: string;
+  text: string;
+};
+
+export function invitationEmail(opts: {
+  inviterEmail: string;
+  lang?: "es" | "en";
+}): InvitationEmailTemplate {
+  const lang = opts.lang || "es";
+  const inviter = opts.inviterEmail;
+
+  if (lang === "en") {
+    return {
+      subject: `${inviter} invited you to paradaise`,
+      html: renderHtml({
+        title: `${inviter} invited you to paradaise`,
+        bodyLines: [
+          "Hi,",
+          `I'm Francisco. ${inviter} invited you to paradaise.`,
+          "paradaise is an app that helps you not get lost between everything you already do. It's in waitlist and opening access by invitation.",
+          "If you'd like to reserve your spot: https://paradaise.id",
+          "— Francisco",
+        ],
+        footerNote: "You can ignore this email if you're not interested. We won't write again.",
+      }),
+      text: [
+        "Hi,",
+        "",
+        `I'm Francisco. ${inviter} invited you to paradaise.`,
+        "",
+        "paradaise is an app that helps you not get lost between everything you already do. It's in waitlist and opening access by invitation.",
+        "",
+        "If you'd like to reserve your spot: https://paradaise.id",
+        "",
+        "— Francisco",
+        "",
+        "You can ignore this email if you're not interested. We won't write again.",
+      ].join("\n"),
+    };
+  }
+
+  return {
+    subject: `${inviter} te invitó a paradaise`,
+    html: renderHtml({
+      title: `${inviter} te invitó a paradaise`,
+      bodyLines: [
+        "Hola,",
+        `Soy Francisco. ${inviter} te invitó a paradaise.`,
+        "paradaise es una app que te ayuda a no perderte entre todo lo que ya haces. Está en lista de espera y abriendo accesos por invitación.",
+        "Si quieres reservar tu lugar, aquí: https://paradaise.id",
+        "— Francisco",
+      ],
+      footerNote: "Puedes ignorar este correo si no te interesa. No volvemos a escribir.",
+    }),
+    text: [
+      "Hola,",
+      "",
+      `Soy Francisco. ${inviter} te invitó a paradaise.`,
+      "",
+      "paradaise es una app que te ayuda a no perderte entre todo lo que ya haces. Está en lista de espera y abriendo accesos por invitación.",
+      "",
+      "Si quieres reservar tu lugar, aquí: https://paradaise.id",
+      "",
+      "— Francisco",
+      "",
+      "Puedes ignorar este correo si no te interesa. No volvemos a escribir.",
+    ].join("\n"),
+  };
+}
+
+// =====================================================================
 // HTML renderer mínimo, sobrio. Inline styles para máxima compat clientes.
 // =====================================================================
 
