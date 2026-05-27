@@ -14,7 +14,10 @@ const TOTAL_STEPS = 7;
 
 export default function DemoPage() {
   const [step, setStep] = useState<number>(1);
-  const [consents, setConsents] = useState<Consents>({ ia: true, notas: true, busquedas: true, browser: true });
+  // Bug C fix (2026-05-26): arrancamos con solo IA conectada (locked).
+  // El usuario activa las demás → la barra crece progresivamente → animación pedagógica.
+  // Evita la contradicción "todos los toggles en OFF visualmente pero barra dice 100%".
+  const [consents, setConsents] = useState<Consents>({ ia: true, notas: false, busquedas: false, browser: false });
 
   // Input opcional del usuario (textarea libre en Step 4).
   const [ejemplo, setEjemplo] = useState<string>("");
@@ -61,25 +64,44 @@ export default function DemoPage() {
 
   const reiniciar = () => {
     setStep(1);
-    setConsents({ ia: true, notas: true, busquedas: true, browser: true });
+    // Bug C fix: reset coherente con estado inicial (solo IA locked).
+    setConsents({ ia: true, notas: false, busquedas: false, browser: false });
     setEjemplo("");
     setTrazaGuardada(false);
     scrollToTop();
   };
 
+  // Bug A fix (2026-05-26): header sticky con contador "Paso N de M" + botón
+  // "Siguiente" siempre visible. En Step 7 no mostramos el sticky para forzar
+  // el flujo de validación humano (captcha + email).
+  const showStickyNext = step >= 1 && step < TOTAL_STEPS;
+
   return (
     <div className="flex-1 max-w-2xl mx-auto w-full px-5 sm:px-6 py-8 sm:py-12">
-      {/* Header del demo: solo a partir del paso 2 (paso 1 es el hero limpio) */}
-      {step > 1 && (
-        <header className="mb-10">
-          <div className="w-full h-[2px] bg-white/10 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-white/85 transition-[width] duration-500 ease-in-out"
-              style={{ width: `${progressPct}%` }}
-            />
-          </div>
-        </header>
-      )}
+      {/* Header sticky del demo: contador + botón Siguiente siempre visibles */}
+      <header className="sticky top-0 z-30 -mx-5 sm:-mx-6 px-5 sm:px-6 pt-3 pb-4 mb-8 bg-black/70 backdrop-blur-md border-b border-white/5">
+        <div className="flex items-center justify-between gap-3 mb-2">
+          <span className="text-white/55 text-[11px] uppercase tracking-[0.2em]">
+            Paso {step} de {TOTAL_STEPS}
+          </span>
+          {showStickyNext && (
+            <button
+              type="button"
+              onClick={next}
+              className="px-4 py-1.5 rounded-full text-xs font-medium bg-white text-black hover:bg-white/90 transition-opacity inline-flex items-center gap-1.5"
+              aria-label={`Avanzar al paso ${step + 1}`}
+            >
+              Siguiente <span aria-hidden>→</span>
+            </button>
+          )}
+        </div>
+        <div className="w-full h-[3px] bg-white/10 rounded-full overflow-hidden">
+          <div
+            className="h-full bg-white/85 transition-[width] duration-500 ease-in-out"
+            style={{ width: `${progressPct}%` }}
+          />
+        </div>
+      </header>
 
       <section>
         {step === 1 && <Step1 onNext={next} />}

@@ -21,6 +21,8 @@ export default function MamaLanding() {
   const [accesoAbierto, setAccesoAbierto] = useState(false);
   const [inviteeEmail, setInviteeEmail] = useState("");
   const [invitacionEnviada, setInvitacionEnviada] = useState(false);
+  const [invitando, setInvitando] = useState(false);
+  const [inviteError, setInviteError] = useState<string | null>(null);
 
   const isValidEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
 
@@ -57,9 +59,30 @@ export default function MamaLanding() {
   };
 
   const inviteeValido = isValidEmail(inviteeEmail);
-  const handleEnviarInvitacion = () => {
-    if (!inviteeValido) return;
-    setInvitacionEnviada(true);
+  const handleEnviarInvitacion = async () => {
+    if (!inviteeValido || invitando || invitacionEnviada) return;
+    setInvitando(true);
+    setInviteError(null);
+    try {
+      const res = await fetch("/api/invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          inviterEmail: email.toLowerCase().trim(),
+          inviteeEmail: inviteeEmail.toLowerCase().trim(),
+        }),
+      });
+      const data = await res.json();
+      if (res.ok && data.ok) {
+        setInvitacionEnviada(true);
+      } else {
+        setInviteError("No pudimos enviar la invitación. Inténtalo de nuevo en un momento.");
+      }
+    } catch {
+      setInviteError("No pudimos enviar la invitación. Inténtalo de nuevo en un momento.");
+    } finally {
+      setInvitando(false);
+    }
   };
 
   return (
@@ -136,14 +159,16 @@ export default function MamaLanding() {
           Tu información. Tus reglas.
         </h2>
 
-        <div className="grid sm:grid-cols-3 gap-4">
-          <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5">
+        {/* Bug B fix (2026-05-26): 3 columnas solo en lg+ (1024px), no en sm.
+            min-w-0 evita overflow horizontal de grid items con texto largo. */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5 min-w-0">
             <div className="text-white/40 text-[11px] uppercase tracking-wider mb-3">Qué ve</div>
             <p className="text-white/80 text-sm leading-relaxed">
               Solo los espacios que tú decides conectar.
             </p>
           </div>
-          <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5">
+          <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5 min-w-0">
             <div className="text-white/40 text-[11px] uppercase tracking-wider mb-3">Qué nunca hace</div>
             <ul className="text-white/80 text-sm leading-relaxed space-y-1.5">
               <li>Nunca escucha tu micrófono.</li>
@@ -152,7 +177,7 @@ export default function MamaLanding() {
               <li>Nunca vende tus datos personales.</li>
             </ul>
           </div>
-          <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5">
+          <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5 min-w-0">
             <div className="text-white/40 text-[11px] uppercase tracking-wider mb-3">Dónde vive</div>
             <p className="text-white/80 text-sm leading-relaxed">
               Tu información vive en infraestructura privada y segura asociada únicamente a tu cuenta.
@@ -199,22 +224,28 @@ export default function MamaLanding() {
                   <input
                     type="email"
                     value={inviteeEmail}
-                    onChange={(e) => setInviteeEmail(e.target.value)}
-                    disabled={invitacionEnviada}
+                    onChange={(e) => {
+                      setInviteeEmail(e.target.value);
+                      if (inviteError) setInviteError(null);
+                    }}
+                    disabled={invitacionEnviada || invitando}
                     placeholder="su@correo.com"
                     className="flex-1 px-4 py-3 rounded-lg text-sm bg-white/[0.04] border border-white/15 text-white/90 focus:outline-none focus:border-white/50 disabled:opacity-60 transition-colors"
                   />
                   <button
                     type="button"
                     onClick={handleEnviarInvitacion}
-                    disabled={!inviteeValido || invitacionEnviada}
+                    disabled={!inviteeValido || invitacionEnviada || invitando}
                     className="btn-paradaise-primary px-5 py-2.5 rounded-full text-sm font-medium"
                   >
-                    {invitacionEnviada ? "Enviada" : "Enviar invitación"}
+                    {invitando ? "..." : invitacionEnviada ? "Enviada" : "Enviar invitación"}
                   </button>
                 </div>
                 {invitacionEnviada && (
                   <p className="text-white/75 text-xs mt-2">Acceso enviado.</p>
+                )}
+                {inviteError && (
+                  <p className="text-red-400/80 text-xs mt-2">{inviteError}</p>
                 )}
               </div>
             )}

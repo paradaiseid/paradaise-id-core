@@ -37,7 +37,7 @@ export default function Step2({ consents, usoLabel, usoPct, usoHint, onToggle, o
               disabled={t.locked}
               aria-label={`Toggle ${t.label}`}
               className={`relative w-11 h-6 rounded-full flex-shrink-0 transition-colors duration-200 ${
-                consents[t.key] ? "bg-white/85" : "bg-white/15"
+                consents[t.key] ? "bg-cyan-300/80" : "bg-white/15"
               } ${t.locked ? "cursor-not-allowed" : "cursor-pointer"}`}
             >
               <span

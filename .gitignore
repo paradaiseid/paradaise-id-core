@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# scripts locales de operación de Francisco (no son parte del producto)
+# Si necesitas commitear alguno específico, agrega `!nombre.bat` después.
+*.bat
+*.ps1
+*.cmd
