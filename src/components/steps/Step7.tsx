@@ -26,6 +26,8 @@ export default function Step7({ onPrev, onReiniciar }: Props) {
   const [inviteeConfirm, setInviteeConfirm] = useState("");
   const [inviteeConfirmShown, setInviteeConfirmShown] = useState(false);
   const [invitacionEnviada, setInvitacionEnviada] = useState(false);
+  const [invitando, setInvitando] = useState(false);
+  const [inviteError, setInviteError] = useState<string | null>(null);
 
   const emailValido = isValidEmail(email);
   const emailMatch = emailValido && email.toLowerCase() === emailConfirm.toLowerCase() && emailConfirm.length > 0;
@@ -72,9 +74,30 @@ export default function Step7({ onPrev, onReiniciar }: Props) {
     }
   };
 
-  const handleEnviarInvitacion = () => {
-    if (!inviteeValido || !inviteeMatch) return;
-    setInvitacionEnviada(true);
+  const handleEnviarInvitacion = async () => {
+    if (!inviteeValido || !inviteeMatch || invitando || invitacionEnviada) return;
+    setInvitando(true);
+    setInviteError(null);
+    try {
+      const res = await fetch("/api/invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          inviterEmail: email.toLowerCase().trim(),
+          inviteeEmail: inviteeEmail.toLowerCase().trim(),
+        }),
+      });
+      const data = await res.json();
+      if (res.ok && data.ok) {
+        setInvitacionEnviada(true);
+      } else {
+        setInviteError("No pudimos enviar la invitación. Inténtalo de nuevo en un momento.");
+      }
+    } catch {
+      setInviteError("No pudimos enviar la invitación. Inténtalo de nuevo en un momento.");
+    } finally {
+      setInvitando(false);
+    }
   };
 
   if (registered) {
@@ -127,11 +150,12 @@ export default function Step7({ onPrev, onReiniciar }: Props) {
             </Reveal>
 
             <div className="flex items-center gap-3 mt-4">
-              <Btn onClick={handleEnviarInvitacion} disabled={!inviteeMatch || invitacionEnviada} small>
-                {invitacionEnviada ? "Enviada" : "Enviar invitación"}
+              <Btn onClick={handleEnviarInvitacion} disabled={!inviteeMatch || invitacionEnviada || invitando} small>
+                {invitando ? "..." : invitacionEnviada ? "Enviada" : "Enviar invitación"}
               </Btn>
               {invitacionEnviada && <span className="text-cyan-300/80 text-xs">acceso enviado</span>}
             </div>
+            {inviteError && <p className="text-red-400/80 text-xs mt-3">{inviteError}</p>}
           </div>
         )}
 
