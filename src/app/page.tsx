@@ -2,22 +2,74 @@
 // MamaLanding — home pública de paradaise.id
 // Doctrina: lenguaje cotidiano, sin jerga. La prueba es que la mamá lo entienda.
 // El demo interactivo de 7 pasos vive en /demo
+//
+// A/B TEST (2026-05-30):
+//   ?v=a → "Foco"       headline: ¿Te distraes más de lo que deberías?
+//   ?v=b → "Continuidad" headline: No pierdas el hilo.
+//   Sin param → variante A por default
+//   KPI: correos capturados por variante. Comparar a 100 signups.
 
 "use client";
 
-import { useState, type ChangeEvent } from "react";
+import { useState, useEffect, type ChangeEvent } from "react";
 import Link from "next/link";
+
+// ---------------------------------------------------------------------------
+// Copia por variante
+// ---------------------------------------------------------------------------
+const HERO = {
+  a: {
+    tag: "FOCO",
+    headline: "¿Te distraes más de lo que deberías?",
+    sub: "No es falta de disciplina. paradaise.id registra cómo funciona tu mente — sin que hagas nada extra.",
+  },
+  b: {
+    tag: "CONTINUIDAD",
+    headline: "No pierdas el hilo.",
+    sub: "paradaise.id captura tus patrones reales de trabajo y te los devuelve cuando más los necesitas.",
+  },
+} as const;
+
+type Variant = "a" | "b";
+
+// ---------------------------------------------------------------------------
+// Pregunta de perfil — segmenta el lead antes de pedir el correo
+// ---------------------------------------------------------------------------
+const PERFILES = [
+  { id: "distraccion", label: "Me distraigo mucho y lo sé" },
+  { id: "ideas",       label: "Tengo demasiadas ideas, pocas terminadas" },
+  { id: "ritmo",       label: "Empiezo fuerte y pierdo el ritmo" },
+  { id: "potencial",   label: "Siento que podría rendir mucho más" },
+] as const;
+
+type PerfilId = (typeof PERFILES)[number]["id"];
 
 const WAITLIST_LANG = "es";
 
+// ---------------------------------------------------------------------------
+// Página
+// ---------------------------------------------------------------------------
 export default function MamaLanding() {
+  // --- A/B variant ---
+  const [variant, setVariant] = useState<Variant>("a");
+  useEffect(() => {
+    const v = new URLSearchParams(window.location.search).get("v");
+    if (v === "b") setVariant("b");
+  }, []);
+
+  const hero = HERO[variant];
+
+  // --- Perfil seleccionado ---
+  const [perfil, setPerfil] = useState<PerfilId | null>(null);
+
+  // --- Email + submit ---
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [alreadyIn, setAlreadyIn] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  // Flow post-signup: invitar a alguien.
+  // --- Post-signup: invitar ---
   const [accesoAbierto, setAccesoAbierto] = useState(false);
   const [inviteeEmail, setInviteeEmail] = useState("");
   const [invitacionEnviada, setInvitacionEnviada] = useState(false);
@@ -34,15 +86,18 @@ export default function MamaLanding() {
       const res = await fetch("/api/waitlist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.toLowerCase().trim(), lang: WAITLIST_LANG }),
+        body: JSON.stringify({
+          email: email.toLowerCase().trim(),
+          lang: WAITLIST_LANG,
+          // Campos extra para segmentación (no rompen el API actual)
+          profile: perfil ?? "no_answer",
+          variant,
+        }),
       });
       const data = await res.json();
       if (res.ok && data.ok) {
-        if (data.duplicate) {
-          setAlreadyIn(true);
-        } else {
-          setSubmitted(true);
-        }
+        if (data.duplicate) setAlreadyIn(true);
+        else setSubmitted(true);
       } else {
         setSubmitError("Algo no salió bien. Inténtalo de nuevo en un momento.");
       }
@@ -87,17 +142,22 @@ export default function MamaLanding() {
 
   return (
     <div className="flex-1 max-w-7xl mx-auto w-full px-5 sm:px-12 lg:px-16 py-10 sm:py-14">
-      {/* HERO — sin CTAs (los CTAs viven en "¿Cómo funciona?") */}
+
+      {/* ── HERO — copy varía por variante A/B ── */}
       <section className="mb-10 sm:mb-14">
-        <h1 className="text-3xl sm:text-5xl font-semibold text-white tracking-tight leading-[1.15] mb-5 max-w-5xl">
-          Una aplicación para tu celular y computadora que te ayuda a no perderte entre todo lo que ya haces.
+        <p className="text-white/30 text-[10px] uppercase tracking-[0.2em] mb-4">{hero.tag}</p>
+        <h1 className="text-3xl sm:text-5xl font-semibold text-white tracking-tight leading-[1.15] mb-4 max-w-4xl">
+          {hero.headline}
         </h1>
-        <p className="text-white/70 text-lg sm:text-xl leading-relaxed max-w-4xl">
-          Como tener un asistente que no olvida tus pendientes mientras tú sigues haciendo tu vida normal.
+        <p className="text-cyan-300/70 text-base sm:text-lg italic mb-5">
+          donde el focus de la inteligencia no es artificial
+        </p>
+        <p className="text-white/60 text-base sm:text-lg leading-relaxed max-w-3xl">
+          {hero.sub}
         </p>
       </section>
 
-      {/* ¿CUÁL ES EL PROBLEMA? */}
+      {/* ── ¿CUÁL ES EL PROBLEMA? ── */}
       <section className="mb-10 sm:mb-14">
         <p className="text-white/40 text-[11px] uppercase tracking-[0.2em] mb-3">¿Cuál es el problema?</p>
         <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight mb-4 leading-snug max-w-4xl">
@@ -109,7 +169,7 @@ export default function MamaLanding() {
         </p>
       </section>
 
-      {/* ¿CÓMO FUNCIONA? — aquí viven los dos CTAs (Ver aplicación + Únete) */}
+      {/* ── ¿CÓMO FUNCIONA? ── */}
       <section className="mb-10 sm:mb-14">
         <p className="text-white/40 text-[11px] uppercase tracking-[0.2em] mb-3">¿Cómo funciona?</p>
         <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight mb-6 leading-snug max-w-4xl">
@@ -133,7 +193,7 @@ export default function MamaLanding() {
         </div>
       </section>
 
-      {/* ¿QUÉ TIENES QUE HACER DESPUÉS? */}
+      {/* ── QUÉ VES CUANDO ABRES ── */}
       <section className="mb-10 sm:mb-14">
         <p className="text-white/40 text-[11px] uppercase tracking-[0.2em] mb-3">¿Qué tienes que hacer después?</p>
         <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight mb-4 leading-snug">
@@ -147,20 +207,17 @@ export default function MamaLanding() {
           <li className="flex gap-2"><span className="text-white/40">·</span><span>acciones rápidas para ayudarte a avanzar</span></li>
           <li className="flex gap-2"><span className="text-white/40">·</span><span>ideas importantes que no quieres perder</span></li>
           <li className="flex gap-2"><span className="text-white/40">·</span><span>continuidad entre conversaciones</span></li>
-          <li className="flex gap-2"><span className="text-white/40">·</span><span>métricas básicas</span></li>
+          <li className="flex gap-2"><span className="text-white/40">·</span><span>métricas básicas de foco y actividad</span></li>
           <li className="flex gap-2"><span className="text-white/40">·</span><span>uso de IA y redes sociales</span></li>
         </ul>
       </section>
 
-      {/* PRIVACIDAD */}
+      {/* ── PRIVACIDAD ── */}
       <section className="mb-10 sm:mb-14">
         <p className="text-white/40 text-[11px] uppercase tracking-[0.2em] mb-3">Privacidad</p>
         <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight mb-6 leading-snug">
           Tu información. Tus reglas.
         </h2>
-
-        {/* Bug B fix (2026-05-26): 3 columnas solo en lg+ (1024px), no en sm.
-            min-w-0 evita overflow horizontal de grid items con texto largo. */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5 min-w-0">
             <div className="text-white/40 text-[11px] uppercase tracking-wider mb-3">Qué ve</div>
@@ -186,11 +243,12 @@ export default function MamaLanding() {
         </div>
       </section>
 
-      {/* WAITLIST — id ancla para "Únete" del nav y del CTA secundario */}
+      {/* ── WAITLIST ── */}
       <section id="waitlist" className="mb-10 scroll-mt-24">
         <p className="text-white/40 text-[11px] uppercase tracking-[0.2em] mb-3">Reserva tu acceso</p>
 
         {submitted || alreadyIn ? (
+          /* ── Estado post-signup ── */
           <>
             <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight mb-2 leading-snug">
               {submitted ? "Estás dentro." : "Ya estás en la lista."}
@@ -241,29 +299,48 @@ export default function MamaLanding() {
                     {invitando ? "..." : invitacionEnviada ? "Enviada" : "Enviar invitación"}
                   </button>
                 </div>
-                {invitacionEnviada && (
-                  <p className="text-white/75 text-xs mt-2">Acceso enviado.</p>
-                )}
-                {inviteError && (
-                  <p className="text-red-400/80 text-xs mt-2">{inviteError}</p>
-                )}
+                {invitacionEnviada && <p className="text-white/75 text-xs mt-2">Acceso enviado.</p>}
+                {inviteError && <p className="text-red-400/80 text-xs mt-2">{inviteError}</p>}
               </div>
             )}
 
-            <div className="flex flex-col sm:flex-row gap-3 max-w-xl">
-              <Link
-                href="/demo"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full border border-white/20 text-white text-sm font-medium hover:bg-white/[0.04] transition-colors"
-              >
-                Ver demo otra vez
-              </Link>
-            </div>
+            <Link
+              href="/demo"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full border border-white/20 text-white text-sm font-medium hover:bg-white/[0.04] transition-colors"
+            >
+              Ver demo otra vez
+            </Link>
           </>
         ) : (
+          /* ── Formulario: perfil → email ── */
           <>
-            <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight mb-6 leading-snug">
+            <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight mb-2 leading-snug">
               Estás a un correo de empezar.
             </h2>
+            <p className="text-white/50 text-sm mb-6">
+              Una pregunta rápida primero — no hay respuestas buenas ni malas.
+            </p>
+
+            {/* Pregunta de perfil */}
+            <p className="text-white/70 text-sm mb-3 font-medium">¿Qué te describe mejor?</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-xl mb-6">
+              {PERFILES.map((p) => (
+                <button
+                  key={p.id}
+                  type="button"
+                  onClick={() => setPerfil(p.id)}
+                  className={`text-left px-4 py-3 rounded-xl text-sm border transition-all duration-200 ${
+                    perfil === p.id
+                      ? "border-cyan-300/50 bg-cyan-300/[0.07] text-white"
+                      : "border-white/10 bg-white/[0.03] text-white/65 hover:border-white/25 hover:text-white/85"
+                  }`}
+                >
+                  {p.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Email — aparece siempre, pero el botón se activa con selección */}
             <div className="flex flex-col sm:flex-row gap-3 max-w-xl">
               <input
                 type="email"
@@ -276,15 +353,19 @@ export default function MamaLanding() {
                 type="button"
                 onClick={onSubmit}
                 disabled={!isValidEmail(email) || submitting}
-                className="btn-paradaise-primary px-6 py-3 rounded-full font-medium text-sm"
+                className="btn-paradaise-primary px-6 py-3 rounded-full font-medium text-sm disabled:opacity-40"
               >
                 {submitting ? "..." : "Reserva tu acceso →"}
               </button>
             </div>
             {submitError && <p className="text-red-400/80 text-xs mt-3">{submitError}</p>}
+            <p className="text-white/25 text-[11px] mt-3">
+              Sin spam. Sin vender tus datos. Solo te avisamos cuando abramos.
+            </p>
           </>
         )}
       </section>
+
     </div>
   );
 }

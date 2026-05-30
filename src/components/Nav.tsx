@@ -13,6 +13,7 @@ type NavLink = { href: string; label: string };
 const NAV_LINKS_ES: NavLink[] = [
   { href: "/about", label: "Nosotros" },
   { href: "/demo", label: "Demo" },
+  { href: "/dashboard", label: "Tu día" },
   { href: "/#waitlist", label: "Únete" },
 ];
 

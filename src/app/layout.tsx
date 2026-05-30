@@ -16,9 +16,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "paradaise.id",
+  title: "Paradaise — donde el focus de la inteligencia no es artificial",
   description:
-    "No reinicies contexto. Recuperalo mejorado. paradaise.id mantiene tu contexto vivo entre conversaciones, herramientas y dias. Bajo tu consentimiento.",
+    "Paradaise registra cómo funciona tu mente — sin autoreporte, sin tests, sin encuestas. Donde el focus de la inteligencia no es artificial.",
 };
 
 export default function RootLayout({

@@ -34,7 +34,7 @@ export default function Footer() {
     <footer className="border-t border-white/5 py-6 mt-12">
       <div className="max-w-5xl mx-auto px-5 sm:px-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <p className="text-white/30 text-xs">
-          Copyright © 2026 paradaise.id — All Rights Reserved.
+          Paradaise — donde el focus de la inteligencia no es artificial
         </p>
         <nav className="flex flex-wrap gap-5" aria-label={lang === "en" ? "Footer" : "Pie de página"}>
           {links.map((l) => (
